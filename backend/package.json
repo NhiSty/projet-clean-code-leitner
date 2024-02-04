@@ -1,0 +1,62 @@
+{
+  "name": "clean-code-project-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "start": "ts-node ./src/main.ts",
+    "dev": "NODE_ENV=development nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/main.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage",
+    "docs": "npx compodoc -p tsconfig.doc.json",
+    "docs:serve": "npx compodoc -p tsconfig.doc.json -sw --port 8888",
+    "mikro-orm": "ts-node --esm ./node_modules/@mikro-orm/cli/cli.js",
+    "migrate:up": "npm run mikro-orm migration:up",
+    "migrate:down": "npm run mikro-orm migration:down",
+    "migrate:fresh": "npm run mikro-orm migration:fresh"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@adonisjs/fold": "^9.9.3-12",
+    "@mikro-orm/core": "^5.9.5",
+    "@mikro-orm/migrations": "^5.9.5",
+    "@mikro-orm/sqlite": "^5.9.5",
+    "@vinejs/vine": "^1.7.0",
+    "fastify": "^4.25.1",
+    "pino": "^8.17.1",
+    "reflect-metadata": "^0.2.1",
+    "supertest": "^6.3.3"
+  },
+  "devDependencies": {
+    "@compodoc/compodoc": "^1.1.23",
+    "@japa/expect": "^3.0.1",
+    "@japa/runner": "^3.1.1",
+    "@mikro-orm/cli": "^5.9.5",
+    "@mikro-orm/seeder": "^5.9.5",
+    "@swc/core": "^1.3.101",
+    "@types/node": "^20.10.5",
+    "@types/supertest": "^2.0.16",
+    "@vitest/coverage-v8": "^1.1.0",
+    "@vitest/ui": "^1.1.0",
+    "c8": "^8.0.1",
+    "nodemon": "^3.0.2",
+    "pino-pretty": "^10.3.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3",
+    "undici": "^6.0.1",
+    "unplugin-swc": "^1.4.4",
+    "vitest": "^1.1.0"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  }
+}
