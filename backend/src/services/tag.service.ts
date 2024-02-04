@@ -1,5 +1,5 @@
 import { EntityManager, EntityRepository } from "@mikro-orm/core";
-import { Tag } from "../../database/models/tag.model.js";
+import { Tag } from "../database/models/tag.model.js";
 import { inject } from "@adonisjs/fold";
 
 @inject()
@@ -31,7 +31,7 @@ export class TagService {
    * @param id id of the tag to find
    */
   public async findTagById(id: number): Promise<Tag | null> {
-    return await this.tagRepository.findOne({ id });
+    return this.tagRepository.findOne({ id });
   }
 
   /**
@@ -39,7 +39,7 @@ export class TagService {
    * @param name name of the tag
    */
   public async findTagByName(name: string): Promise<Tag | null> {
-    return await this.tagRepository.findOne({ name });
+    return this.tagRepository.findOne({ name });
   }
 
   /**

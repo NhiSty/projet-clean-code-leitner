@@ -30,5 +30,18 @@ export class Migration20231220121911 extends Migration {
         "username" varchar not null unique
       );
     `);
+
+    // User Card Table
+    this.addSql(`
+      create table "user_card" (
+        "userId" integer not null,
+        "cardId" integer not null,
+        "lastSeen" datetime not null default current_timestamp,
+
+        FOREIGN KEY (userId) REFERENCES user(id),
+        FOREIGN KEY (cardId) REFERENCES card(id),
+        UNIQUE(userId, cardId)
+      );
+    `);
   }
 }

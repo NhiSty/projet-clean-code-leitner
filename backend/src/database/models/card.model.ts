@@ -1,25 +1,15 @@
 import {
-  BaseEntity,
+  Collection,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryKey,
   Property,
+  type Rel,
 } from "@mikro-orm/core";
 import { Tag } from "./tag.model.js";
-
-/**
- * CardCategory is an enum that represents the category of a card.
- */
-export enum CardCategory {
-  FIRST = "first",
-  SECOND = "second",
-  THIRD = "third",
-  FOURTH = "fourth",
-  FIFTH = "fifth",
-  SIXTH = "sixth",
-  SEVENTH = "seventh",
-  DONE = "done",
-}
+import { User } from "./user.model.js";
+import type { DbID } from "../../utils/types.js";
 
 /**
  * Card is a MikroORM entity that represents a card in the database.
@@ -30,13 +20,7 @@ export class Card {
    * The id of the card.
    */
   @PrimaryKey()
-  declare id: number;
-
-  /***
-   * The category where the card is in.
-   */
-  @Property({ columnType: "varchar", defaultRaw: CardCategory.FIRST })
-  declare category: CardCategory;
+  declare id: DbID;
 
   /**
    * The question of the card.
@@ -54,5 +38,11 @@ export class Card {
    * The tags associated with the card.
    */
   @ManyToOne(() => Tag, { name: "tagId" })
-  declare tag: Tag;
+  declare tag: Rel<Tag>;
+
+  /**
+   * Many card are referenced in many user cards association.
+   */
+  @ManyToMany()
+  public users = new Collection<User>(this);
 }

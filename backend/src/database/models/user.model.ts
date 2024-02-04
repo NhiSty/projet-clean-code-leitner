@@ -1,4 +1,14 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from "@mikro-orm/core";
+import { UserCard } from "./userCard.model.js";
+import { Card } from "./card.model.js";
+import type { DbID } from "../../utils/types.js";
 
 /**
  * User is a MikroORM entity that represents a user in the database.
@@ -10,11 +20,26 @@ export class User {
    * The id of the user.
    */
   @PrimaryKey()
-  declare id: number;
+  declare id: DbID;
 
   /**
    * The username of the user.
    */
   @Property({ unique: true })
   declare username: string;
+
+  /**
+   * The password of the user.
+   */
+  @Property()
+  declare password: string;
+
+  /**
+   * Many users can have many cards associated with it.
+   */
+  @ManyToMany({
+    entity: () => Card,
+    pivotEntity: () => UserCard,
+  })
+  public cards = new Collection<Card>(this);
 }

@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import fastify, { FastifyInstance } from "fastify";
 import logger from "./utils/logger.js";
 import "./database/datasource.js";

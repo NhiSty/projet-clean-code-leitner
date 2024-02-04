@@ -1,5 +1,12 @@
-import { Entity, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  Collection,
+  Entity,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from "@mikro-orm/sqlite";
 import { Card } from "./card.model.js";
+import type { DbID } from "../../utils/types.js";
 
 /**
  * Tag is a MikroORM entity that represents a tag in the database.
@@ -11,7 +18,7 @@ export class Tag {
    * The id of the tag.
    */
   @PrimaryKey()
-  declare id: number;
+  declare id: DbID;
 
   /**
    * The name of the tag.
@@ -23,5 +30,5 @@ export class Tag {
    * All the cards that are associated with this tag.
    */
   @OneToMany(() => Card, (card) => card.tag)
-  declare card: Card[];
+  public cards = new Collection<Card>(this);
 }

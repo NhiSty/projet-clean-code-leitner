@@ -1,5 +1,5 @@
-import { CardService } from "../../services/cards/card.service.js";
-import { TagService } from "../../services/tags/tag.service.js";
+import { CardService } from "../../services/card.service.js";
+import { TagService } from "../../services/tag.service.js";
 import {
   createCardValidator,
   getAllCardsParamsValidator,
