@@ -5,42 +5,36 @@ export class Migration20231220121911 extends Migration {
     // Tags table
     this.addSql(`
       create table "tag" (
-          "id" integer not null primary key autoincrement,
+          "id" uuid not null primary key,
           "name" varchar not null unique
       );
-    `);
 
-    // Card Table
-    this.addSql(`
-        create table "card" (
-          "id" integer not null primary key autoincrement,
-          "question" varchar not null unique,
-          "answer" varchar not null,
-          "category" varchar not null,
-          "tagId" integer not null,
-  
-          FOREIGN KEY (tagId) REFERENCES tag(id)
-        );
-    `);
+      -- Card Table
+      create table "card" (
+        "id" uuid not null primary key,
+        "question" varchar not null unique,
+        "answer" varchar not null,
+        "category" varchar not null,
+        "tag_id" uuid not null,
 
-    // User Table
-    this.addSql(`
+        FOREIGN KEY (tag_id) REFERENCES tag(id)
+      );
+
+      -- User Table
       create table "user" (
-        "id" integer not null primary key autoincrement,
+        "id" uuid not null primary key,
         "username" varchar not null unique
       );
-    `);
 
-    // User Card Table
-    this.addSql(`
+      -- User Card Table
       create table "user_card" (
-        "userId" integer not null,
-        "cardId" integer not null,
-        "lastSeen" datetime not null default current_timestamp,
+        "user_id" uuid not null,
+        "card_id" uuid not null,
+        "last_seen" date not null default NOW(),
 
-        FOREIGN KEY (userId) REFERENCES user(id),
-        FOREIGN KEY (cardId) REFERENCES card(id),
-        UNIQUE(userId, cardId)
+        FOREIGN KEY (user_id) REFERENCES "user"(id),
+        FOREIGN KEY (card_id) REFERENCES card(id),
+        UNIQUE(user_id, card_id)
       );
     `);
   }

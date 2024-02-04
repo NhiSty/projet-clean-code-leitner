@@ -1,6 +1,6 @@
 import { inject } from "@adonisjs/fold";
 import { AbstractDateService } from "./interfaces/date.interface.js";
-import { EntityManager } from "@mikro-orm/sqlite";
+import { EntityManager } from "@mikro-orm/postgresql";
 import { Card } from "../database/models/card.model.js";
 import { DbID } from "../utils/types.js";
 

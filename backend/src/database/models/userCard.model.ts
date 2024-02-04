@@ -1,9 +1,10 @@
 import {
-    Entity,
-    ManyToOne,
-    PrimaryKey,
-    PrimaryKeyProp,
-    Property,
+  Entity,
+  Enum,
+  ManyToOne,
+  PrimaryKey,
+  PrimaryKeyProp,
+  Property,
 } from "@mikro-orm/core";
 import { CardCategory } from "./cardCategory.enum.js";
 import type { DbID } from "../../utils/types.js";
@@ -13,32 +14,32 @@ import type { DbID } from "../../utils/types.js";
  */
 @Entity()
 export class UserCard {
-    /**
-     * The card id.
-     */
-    @PrimaryKey()
-    declare cardId: DbID;
+  /**
+   * The card id.
+   */
+  @PrimaryKey()
+  declare cardId: DbID;
 
-    /**
-     * The user id.
-     */
-    @PrimaryKey()
-    declare userId: DbID;
+  /**
+   * The user id.
+   */
+  @PrimaryKey()
+  declare userId: DbID;
 
-    /**
-     * Last time the user saw the card.
-     */
-    @Property()
-    declare lastSeen: Date;
+  /**
+   * Last time the user saw the card.
+   */
+  @Property()
+  declare lastSeen: Date;
 
-    /**
-     * The card id.
-     */
-    [PrimaryKeyProp]?: ["cardId", "userId"];
+  /**
+   * The card id.
+   */
+  [PrimaryKeyProp]?: ["cardId", "userId"];
 
-    /**
-     * The card category for the user.
-     */
-    @Property({ default: CardCategory.FIRST })
-    declare category: CardCategory;
+  /**
+   * The card category for the user.
+   */
+  @Enum({ default: CardCategory.FIRST })
+  declare category: CardCategory;
 }

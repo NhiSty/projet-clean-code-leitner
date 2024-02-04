@@ -4,7 +4,7 @@ import {
   OneToMany,
   PrimaryKey,
   Property,
-} from "@mikro-orm/sqlite";
+} from "@mikro-orm/postgresql";
 import { Card } from "./card.model.js";
 import type { DbID } from "../../utils/types.js";
 

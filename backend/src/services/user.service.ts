@@ -1,7 +1,7 @@
 import { inject } from "@adonisjs/fold";
 import { AbstractUserService } from "./interfaces/user.interface.js";
 import { User } from "../database/models/user.model.js";
-import { EntityManager, EntityRepository } from "@mikro-orm/sqlite";
+import { EntityManager, EntityRepository } from "@mikro-orm/postgresql";
 
 @inject()
 export class UserService implements AbstractUserService {

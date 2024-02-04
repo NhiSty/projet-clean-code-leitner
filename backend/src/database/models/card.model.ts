@@ -37,7 +37,7 @@ export class Card {
   /**
    * The tags associated with the card.
    */
-  @ManyToOne(() => Tag, { name: "tagId" })
+  @ManyToOne(() => Tag)
   declare tag: Rel<Tag>;
 
   /**

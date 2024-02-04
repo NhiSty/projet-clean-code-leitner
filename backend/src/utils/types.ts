@@ -5,4 +5,4 @@ export type HttpRequest = FastifyRequest;
 export type HttpResponse = FastifyReply;
 
 // Alias for the DB id
-export type DbID = number;
+export type DbID = string;

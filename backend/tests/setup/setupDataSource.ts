@@ -1,5 +1,5 @@
 import { EntityManager, MikroORM } from "@mikro-orm/core";
-import { defineConfig } from "@mikro-orm/sqlite";
+import { defineConfig } from "@mikro-orm/postgresql";
 import { SeedManager } from "@mikro-orm/seeder";
 import mikroOrmOption from "../../src/mikro-orm.config.js";
 
