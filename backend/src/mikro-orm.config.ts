@@ -7,6 +7,7 @@ import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 import { Card } from "./database/models/card.model.js";
 import { User } from "./database/models/user.model.js";
 import { UserCard } from "./database/models/userCard.model.js";
+import { Migration20240121122924 } from "./migrations/Migration20240121122924.js";
 
 export default defineConfig({
   dbName: process.env.DB_NAME,
@@ -25,6 +26,10 @@ export default defineConfig({
       {
         name: "Migration20231220121911.ts",
         class: Migration20231220121911,
+      },
+      {
+        name: "Migration20240121122924.ts",
+        class: Migration20240121122924,
       },
     ],
   },

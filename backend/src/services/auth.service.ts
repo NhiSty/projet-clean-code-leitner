@@ -6,11 +6,11 @@ import {
 import { User } from "../database/models/user.model.js";
 import { AbstractUserService } from "./interfaces/user.interface.js";
 import { HttpRequest, HttpResponse } from "../utils/types.js";
-import { NotFoundError } from "@mikro-orm/core";
 import {
   BadRequestError,
   ConflictError,
   UnauthorizedError,
+  NotFoundError,
 } from "../errors.js";
 
 @inject()

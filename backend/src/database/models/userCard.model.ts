@@ -2,26 +2,19 @@ import {
   Entity,
   Enum,
   ManyToOne,
-  PrimaryKey,
   PrimaryKeyProp,
   Property,
   type Rel,
-} from "@mikro-orm/core";
+} from "@mikro-orm/postgresql";
 import { CardCategory } from "./cardCategory.enum.js";
-import type { DbID } from "../../utils/types.js";
 import { Card } from "./card.model.js";
+import { User } from "./user.model.js";
 
 /**
  * This model represent the relation between a card and a user, it has an extra field to track the progression of the user with this card.
  */
-@Entity()
+@Entity({ tableName: "user_card" })
 export class UserCard {
-  /**
-   * The user id.
-   */
-  @PrimaryKey()
-  declare userId: DbID;
-
   /**
    * Last time the user saw the card.
    */
@@ -31,7 +24,7 @@ export class UserCard {
   /**
    * The card id.
    */
-  [PrimaryKeyProp]?: ["cardId", "userId"];
+  [PrimaryKeyProp]?: ["user", "card"];
 
   /**
    * The card category for the user.
@@ -40,8 +33,14 @@ export class UserCard {
   declare category: CardCategory;
 
   /**
+   * User relationship
+   */
+  @ManyToOne({ entity: () => User, primary: true, joinColumn: "user_id" })
+  declare user: Rel<User>;
+
+  /**
    * Card relationship
    */
-  @ManyToOne({ entity: () => Card, mapToPk: true })
+  @ManyToOne({ entity: () => Card, primary: true, joinColumn: "card_id" })
   declare card: Rel<Card>;
 }

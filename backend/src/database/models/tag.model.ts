@@ -17,7 +17,7 @@ export class Tag {
   /**
    * The id of the tag.
    */
-  @PrimaryKey()
+  @PrimaryKey({ type: "uuid" })
   declare id: DbID;
 
   /**

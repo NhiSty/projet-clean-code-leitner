@@ -69,12 +69,10 @@ export class CardController {
    */
   public async createCard(request: HttpRequest, reply: HttpResponse) {
     const card = await createCardValidator.validate(request.body);
-    const tag = await this.tagService.findTagByName(card.tag);
+    let tag = await this.tagService.findTagByName(card.tag);
 
     if (!tag) {
-      throw new vineErrors.E_VALIDATION_ERROR({
-        tag: ["Unknown tag used"],
-      });
+      tag = await this.tagService.createTag(card.tag);
     }
 
     const createdCard = await this.cardService.createCard(
@@ -82,8 +80,10 @@ export class CardController {
       card.answer,
       tag
     );
+
     reply.send({
-      ...createdCard,
+      question: createdCard.question,
+      answer: createdCard.answer,
       tag: createdCard.tag.name,
     });
   }

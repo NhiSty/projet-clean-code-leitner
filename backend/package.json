@@ -22,7 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@adonisjs/fold": "^10.0.0",
+    "@adonisjs/fold": "^10.0.1",
     "@fastify/cookie": "^9.3.1",
     "@fastify/secure-session": "^7.1.0",
     "@fastify/session": "^10.7.0",
@@ -31,14 +31,15 @@
     "@mikro-orm/postgresql": "^6.0.5",
     "@mikro-orm/reflection": "^6.0.5",
     "@vinejs/vine": "^1.7.0",
-    "date-fns": "^3.3.0",
-    "dotenv": "^16.3.2",
+    "date-fns": "^3.3.1",
+    "dotenv": "^16.4.0",
     "fastify": "^4.25.2",
     "pino": "^8.17.2",
     "supertest": "^6.3.4"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.23",
+    "@faker-js/faker": "^8.3.1",
     "@japa/expect": "^3.0.1",
     "@japa/runner": "^3.1.1",
     "@mikro-orm/cli": "^6.0.5",

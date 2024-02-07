@@ -1,6 +1,8 @@
-import { EntityManager, EntityRepository } from "@mikro-orm/core";
+import { EntityManager, EntityRepository } from "@mikro-orm/postgresql";
 import { Tag } from "../database/models/tag.model.js";
 import { inject } from "@adonisjs/fold";
+import { DbID } from "../utils/types.js";
+import { generateUUID } from "../database/datasource.js";
 
 @inject()
 export class TagService {
@@ -22,15 +24,18 @@ export class TagService {
    */
   public async createTag(name: string): Promise<Tag> {
     const tag = new Tag();
+    tag.id = generateUUID();
     tag.name = name;
-    return this.tagRepository.create(tag);
+
+    await this.tagRepository.insert(tag);
+    return tag;
   }
 
   /**
    * Find a tag by its id
    * @param id id of the tag to find
    */
-  public async findTagById(id: number): Promise<Tag | null> {
+  public async findTagById(id: DbID): Promise<Tag | null> {
     return this.tagRepository.findOne({ id });
   }
 
@@ -46,7 +51,7 @@ export class TagService {
    * Delete a tag from the database
    * @param id id of the tag to delete
    */
-  public async deleteTag(id: number): Promise<void> {
+  public async deleteTag(id: DbID): Promise<void> {
     await this.tagRepository.nativeDelete(id);
   }
 }

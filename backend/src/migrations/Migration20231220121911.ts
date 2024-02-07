@@ -14,7 +14,6 @@ export class Migration20231220121911 extends Migration {
         "id" uuid not null primary key,
         "question" varchar not null unique,
         "answer" varchar not null,
-        "category" varchar not null,
         "tag_id" uuid not null,
 
         FOREIGN KEY (tag_id) REFERENCES tag(id)
@@ -31,6 +30,7 @@ export class Migration20231220121911 extends Migration {
         "user_id" uuid not null,
         "card_id" uuid not null,
         "last_seen" date not null default NOW(),
+        "category" varchar not null,
 
         FOREIGN KEY (user_id) REFERENCES "user"(id),
         FOREIGN KEY (card_id) REFERENCES card(id),

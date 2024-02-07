@@ -1,12 +1,13 @@
-import { Factory, Faker } from "@mikro-orm/seeder";
-import { Tag } from "../../src/database/models/tag.model";
+import { Factory } from "@mikro-orm/seeder";
+import { faker } from "@faker-js/faker/locale/en";
+import { Tag } from "../../src/database/models/tag.model.js";
 
 export class TagFactory extends Factory<Tag> {
   model = Tag;
 
-  protected definition(faker: Faker): Partial<Tag> {
+  protected definition(): Partial<Tag> {
     return {
-      name: faker.helpers.unique(faker.random.word),
+      name: faker.word.words(),
     };
   }
 }

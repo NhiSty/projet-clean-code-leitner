@@ -7,11 +7,11 @@ import {
   PrimaryKey,
   Property,
   type Rel,
-} from "@mikro-orm/core";
+} from "@mikro-orm/postgresql";
 import { Tag } from "./tag.model.js";
 import { User } from "./user.model.js";
 import type { DbID } from "../../utils/types.js";
-import { Quiz } from "./userQuiz.model.js";
+import { Quiz } from "./quiz.model.js";
 import { UserCard } from "./userCard.model.js";
 
 /**
@@ -22,7 +22,7 @@ export class Card {
   /**
    * The id of the card.
    */
-  @PrimaryKey()
+  @PrimaryKey({ type: "uuid" })
   declare id: DbID;
 
   /**
@@ -46,7 +46,10 @@ export class Card {
   /**
    * Many card are referenced in many user cards association.
    */
-  @ManyToMany()
+  @ManyToMany({
+    entity: () => User,
+    mappedBy: (user: User) => user.cards,
+  })
   public users = new Collection<User>(this);
 
   /**
@@ -58,6 +61,6 @@ export class Card {
   /**
    * User card relationships
    */
-  @OneToMany(() => UserCard, (userCard) => userCard.card)
+  @OneToMany({ entity: () => UserCard, mappedBy: (userCard) => userCard.card })
   public userCards = new Collection<UserCard>(this);
 }

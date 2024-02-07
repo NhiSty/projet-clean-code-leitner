@@ -1,11 +1,7 @@
-import { EntityManager, MikroORM } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/postgresql";
 import { defineConfig } from "@mikro-orm/postgresql";
 import { SeedManager } from "@mikro-orm/seeder";
 import mikroOrmOption from "../../src/mikro-orm.config.js";
-
-import { Migration20231220121911 } from "../../src/migrations/Migration20231220121911.js";
-import { DatabaseSeeder } from "../seed/test.seeder.js";
-import { container } from "../../src/utils/ioc.js";
 
 const config = defineConfig({
   ...mikroOrmOption,

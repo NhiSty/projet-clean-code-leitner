@@ -9,7 +9,7 @@ import {
   expect,
 } from "vitest";
 import { container } from "../../src/utils/ioc.js";
-import { MikroORM } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/postgresql";
 import { setupTestDb } from "../setup/setupDataSource.js";
 import { Tag } from "../../src/database/models/tag.model.js";
 import { DatabaseSeeder } from "../seed/test.seeder.js";

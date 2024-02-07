@@ -1,20 +1,16 @@
 import { inject } from "@adonisjs/fold";
 import { AbstractDateService } from "./interfaces/date.interface.js";
-import {
-  EntityManager,
-  EntityRepository,
-  NotFoundError,
-} from "@mikro-orm/postgresql";
+import { EntityManager, EntityRepository, raw } from "@mikro-orm/postgresql";
 import { Card } from "../database/models/card.model.js";
-import { DbID } from "../utils/types.js";
 import { UserCard } from "../database/models/userCard.model.js";
 import {
   CardCategory,
   getNextCategory,
 } from "../database/models/cardCategory.enum.js";
-import { Quiz } from "../database/models/userQuiz.model.js";
-import { UserService } from "./user.service.js";
+import { Quiz } from "../database/models/quiz.model.js";
 import { AbstractUserService } from "./interfaces/user.interface.js";
+import { User } from "../database/models/user.model.js";
+import { LeitherSystem as LeitherSystemService } from "./leither.service.js";
 
 @inject()
 export class QuizService {
@@ -23,8 +19,8 @@ export class QuizService {
   private quizRepository: EntityRepository<Quiz>;
 
   public constructor(
+    private leitherService: LeitherSystemService,
     private dateService: AbstractDateService,
-    private userService: AbstractUserService,
     private em: EntityManager
   ) {
     this.userCardRepository = this.em.getRepository(UserCard);
@@ -32,20 +28,10 @@ export class QuizService {
     this.quizRepository = this.em.getRepository(Quiz);
   }
 
-  public async retrieveQuiz(date: Date, userId: DbID): Promise<Card[]> {
-    const user = await this.userService.findUserById(userId);
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
-
+  public async retrieveQuiz(date: Date, user: User): Promise<Card[]> {
     // First, try to check if there isn't already a quiz in the database
     const quiz = await this.quizRepository.findOne(
-      {
-        date: date,
-        user: {
-          id: userId,
-        },
-      },
+      { date, user },
       {
         fields: ["cards"],
       }
@@ -56,43 +42,54 @@ export class QuizService {
       return quiz.cards.getItems();
     }
 
-    // Otherwise, if there isn't any quiz in the database yet,
-    // generate a new one with random cards using the Leither system
+    // Otherwise, if there isn't any quiz in the database yet, generate a new one with random cards using the Leither system
 
-    // Get all the cards that can be retrieved
-    const cards = await this.cardRepository.findAll({
-      where: {
-        $or: [
-          // Select cards that haven't been presented yet to the user,
-          // (i.e. cards that don't have "user cards" associated to them)
-          {
-            users: {
-              $none: {
-                id: userId,
-              },
-            },
-          },
+    /*
+     * Get all the cards that can be retrieved
+     * To explain a bit, we want:
+     * - All the cards that the user has never seen (= no user_card entries)
+     * - All the cards that the user has seen and that he can see again
+     *  (= user_cards entries that have a date above the computed date from the leither system)
+     */
+    const query = this.cardRepository
+      .createQueryBuilder("c")
+      .leftJoin("c.userCards", "uc")
+      .where(
+        `
+        (NOT EXISTS(SELECT id FROM user_card as "uc" WHERE uc.user_id = ?))
+        OR
+        (
+          (uc.user_id = ?)
+          AND
+          (
+            (category = 'first' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'second' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'third' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'fourth' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'fifth' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'sixth' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+            OR
+            (category = 'seventh' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
+          )
+        )
+      `,
+        [
+          // User ID: first and second binding
+          user.id,
+          user.id,
+          // Categories (from first to seventh): third to ninth binding
+          ...Object.values(CardCategory)
+            .filter((cat) => cat !== CardCategory.DONE)
+            .map((cat) => this.leitherService.getDays(cat)),
+        ]
+      );
 
-          // Select all cards that match the Leither system
-          {
-            // For each card category
-            $or: Object.values(CardCategory)
-              // Exclude the "done" category
-              .filter((cat) => cat !== CardCategory.DONE)
-              // And map the value on each categories
-              .map((category) => ({
-                userCards: {
-                  category: category,
-                  userId,
-                  lastSeen: {
-                    $lt: this.dateService.getNextDate(date, category),
-                  },
-                },
-              })),
-          },
-        ],
-      },
-    });
+    const cards = await query.execute();
 
     // If there is no cards, return an empty array
     if (cards.length === 0) {
@@ -119,23 +116,21 @@ export class QuizService {
    * @param valid state of the card
    */
   public async answerCard(
-    id: DbID,
-    userId: DbID,
+    card: Card,
+    user: User,
     valid: boolean
   ): Promise<void> {
     // Get the current user card value
     let userCard = await this.userCardRepository.findOne({
-      card: {
-        id,
-      },
-      userId: userId,
+      card,
+      user,
     });
 
     // If there is no card, set the default values
     if (userCard == null) {
       userCard = new UserCard();
-      userCard.card = await this.cardRepository.findOneOrFail({ id });
-      userCard.userId = userId;
+      userCard.card = card;
+      userCard.user = user;
       userCard.category = CardCategory.FIRST;
     }
 
@@ -150,8 +145,8 @@ export class QuizService {
     // Update the category and last seen date
     await this.userCardRepository.upsert(
       {
-        card: { id },
-        userId: userId,
+        card,
+        user,
         category: userCard.category,
         lastSeen: this.dateService.getToday(),
       },

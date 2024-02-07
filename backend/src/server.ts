@@ -4,7 +4,7 @@ import "./database/datasource.js";
 import { fastifyErrorHandler } from "./errors.js";
 import { setupRoutes } from "./routes.js";
 import { container } from "./utils/ioc.js";
-import { MikroORM } from "@mikro-orm/core";
+import { MikroORM } from "@mikro-orm/postgresql";
 import { AbstractAuthService } from "./services/interfaces/auth.interface.js";
 import { AuthService } from "./services/auth.service.js";
 import { AbstractUserService } from "./services/interfaces/user.interface.js";
@@ -13,6 +13,8 @@ import { FakeUserService } from "../tests/stubs/fakeUser.service.js";
 import { FakeAuthService } from "../tests/stubs/fakeAuth.service.js";
 import fastifySecureSession from "@fastify/secure-session";
 import { User } from "./database/models/user.model.js";
+import { AbstractDateService } from "./services/interfaces/date.interface.js";
+import DateService from "./services/date.service.js";
 
 /**
  * Server is the main class of the application. It is used to start and stop the application.
@@ -93,6 +95,9 @@ export async function createServer(port: number): Promise<Server> {
     port,
     await container.make(MikroORM),
   ]);
+
+  // Bind the date server
+  container.bind(AbstractDateService, () => container.make(DateService));
 
   if (process.env.WITH_AUTH === "1") {
     // If this variable is set to true, use the normal auth service

@@ -1,12 +1,18 @@
-import { EntityManager, EntityRepository, FilterQuery } from "@mikro-orm/core";
+import {
+  EntityManager,
+  EntityRepository,
+  FilterQuery,
+} from "@mikro-orm/postgresql";
 import { Card } from "../database/models/card.model.js";
 import { Tag } from "../database/models/tag.model.js";
 import { inject } from "@adonisjs/fold";
 import { DbID } from "../utils/types.js";
+import { generateUUID } from "../database/datasource.js";
 
 @inject()
 export class CardService {
   private cardRepository: EntityRepository<Card>;
+
   public constructor(private em: EntityManager) {
     this.cardRepository = this.em.getRepository(Card);
   }
@@ -41,11 +47,13 @@ export class CardService {
     tag: Tag
   ): Promise<Card> {
     const card = new Card();
+    card.id = generateUUID();
     card.question = question;
     card.answer = answer;
     card.tag = tag;
 
-    return this.cardRepository.create(card);
+    await this.cardRepository.insert(card);
+    return card;
   }
 
   /**

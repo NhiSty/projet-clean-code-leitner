@@ -1,8 +1,8 @@
-import { EntityManager } from "@mikro-orm/core";
+import { EntityManager } from "@mikro-orm/postgresql";
 import { Seeder } from "@mikro-orm/seeder";
-import { Card } from "../../src/database/models/card.model";
-import { CardFactory } from "../factories/card.factory";
-import { TagFactory } from "../factories/tag.factory";
+import { Card } from "../../src/database/models/card.model.js";
+import { CardFactory } from "../factories/card.factory.js";
+import { TagFactory } from "../factories/tag.factory.js";
 
 export class DatabaseSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {

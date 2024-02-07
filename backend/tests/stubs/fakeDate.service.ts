@@ -10,10 +10,7 @@ export class FakeDateService implements AbstractDateService {
     this._date = date;
   }
 
-  getToday(): Date {
+  public getToday(): Date {
     return this._date;
-  }
-  getNextDate(date: Date, category: CardCategory): Date | null {
-    throw new Error("Method not implemented.");
   }
 }

@@ -25,10 +25,7 @@ export class LearningController {
 
     const { date } = await getQuizValidator.validate(request.params);
 
-    const quiz = await this.quizService.retrieveQuiz(
-      date || new Date(),
-      user.id
-    );
+    const quiz = await this.quizService.retrieveQuiz(date || new Date(), user);
 
     response.status(200).send(quiz);
   }
@@ -46,7 +43,7 @@ export class LearningController {
       return;
     }
 
-    await this.quizService.answerCard(cardId, user.id, valid);
+    await this.quizService.answerCard(card, user, valid);
     response.status(204).send();
   }
 }

@@ -5,11 +5,11 @@ import {
   OneToMany,
   PrimaryKey,
   Property,
-} from "@mikro-orm/core";
+} from "@mikro-orm/postgresql";
 import { UserCard } from "./userCard.model.js";
 import { Card } from "./card.model.js";
 import type { DbID } from "../../utils/types.js";
-import { Quiz } from "./userQuiz.model.js";
+import { Quiz } from "./quiz.model.js";
 
 /**
  * User is a MikroORM entity that represents a user in the database.
@@ -20,7 +20,7 @@ export class User {
   /**
    * The id of the user.
    */
-  @PrimaryKey()
+  @PrimaryKey({ type: "uuid" })
   declare id: DbID;
 
   /**
