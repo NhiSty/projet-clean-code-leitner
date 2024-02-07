@@ -5,21 +5,17 @@ import {
   PrimaryKey,
   PrimaryKeyProp,
   Property,
+  type Rel,
 } from "@mikro-orm/core";
 import { CardCategory } from "./cardCategory.enum.js";
 import type { DbID } from "../../utils/types.js";
+import { Card } from "./card.model.js";
 
 /**
  * This model represent the relation between a card and a user, it has an extra field to track the progression of the user with this card.
  */
 @Entity()
 export class UserCard {
-  /**
-   * The card id.
-   */
-  @PrimaryKey()
-  declare cardId: DbID;
-
   /**
    * The user id.
    */
@@ -42,4 +38,10 @@ export class UserCard {
    */
   @Enum({ default: CardCategory.FIRST })
   declare category: CardCategory;
+
+  /**
+   * Card relationship
+   */
+  @ManyToOne({ entity: () => Card, mapToPk: true })
+  declare card: Rel<Card>;
 }

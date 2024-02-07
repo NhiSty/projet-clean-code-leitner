@@ -120,5 +120,5 @@
     "esm": true,
     "swc": true
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "tests/**/*"]
 }

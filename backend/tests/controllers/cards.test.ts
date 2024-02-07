@@ -12,9 +12,9 @@ import { container } from "../../src/utils/ioc.js";
 import { MikroORM } from "@mikro-orm/core";
 import { setupTestDb } from "../setup/setupDataSource.js";
 import { Tag } from "../../src/database/models/tag.model.js";
-import { Card, CardCategory } from "../../src/database/models/card.model.js";
 import { DatabaseSeeder } from "../seed/test.seeder.js";
 import { SchemaGenerator } from "@mikro-orm/postgresql";
+import { CardCategory } from "../../src/database/models/cardCategory.enum.js";
 
 const TOTAL_CARDS_COUNT = 10;
 

@@ -5,6 +5,14 @@ import { fastifyErrorHandler } from "./errors.js";
 import { setupRoutes } from "./routes.js";
 import { container } from "./utils/ioc.js";
 import { MikroORM } from "@mikro-orm/core";
+import { AbstractAuthService } from "./services/interfaces/auth.interface.js";
+import { AuthService } from "./services/auth.service.js";
+import { AbstractUserService } from "./services/interfaces/user.interface.js";
+import { UserService } from "./services/user.service.js";
+import { FakeUserService } from "../tests/stubs/fakeUser.service.js";
+import { FakeAuthService } from "../tests/stubs/fakeAuth.service.js";
+import fastifySecureSession from "@fastify/secure-session";
+import { User } from "./database/models/user.model.js";
 
 /**
  * Server is the main class of the application. It is used to start and stop the application.
@@ -14,6 +22,22 @@ export class Server {
 
   public constructor(private port: number, private dataSource: MikroORM) {
     this.app = fastify({ logger });
+
+    this.app.register(fastifySecureSession, {
+      // the name of the session cookie
+      cookieName: "token",
+      // the secret is required, and is used for signing cookies
+      secret: process.env.APP_SECRET as string,
+      salt: process.env.SECRET_SALT as string,
+      cookie: {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
+    });
+
     this.app.setErrorHandler(fastifyErrorHandler);
   }
 
@@ -69,5 +93,27 @@ export async function createServer(port: number): Promise<Server> {
     port,
     await container.make(MikroORM),
   ]);
+
+  if (process.env.WITH_AUTH === "1") {
+    // If this variable is set to true, use the normal auth service
+    container.bind(AbstractUserService, () => container.make(UserService));
+    container.bind(AbstractAuthService, () => container.make(AuthService));
+    logger.info("`WITH_AUTH` is set to true, using normal auth service");
+  } else {
+    const fakeUser = new User();
+    fakeUser.id = "ffffffff-ffff-ffff-ffff-ffffffffffff";
+    fakeUser.username = "fake user";
+    fakeUser.password = "fake password";
+
+    // Otherwise, use the fake ones
+    container.bind(AbstractUserService, () =>
+      container.make(FakeUserService, [fakeUser])
+    );
+    container.bind(AbstractAuthService, () =>
+      container.make(FakeAuthService, [fakeUser])
+    );
+    logger.info("`WITH_AUTH` is set to false, using fake auth service");
+  }
+
   return server;
 }

@@ -8,7 +8,7 @@ import { AbstractDateService } from "./interfaces/date.interface.js";
  */
 @inject()
 export default class DateService implements AbstractDateService {
-  public async getToday(): Promise<Date> {
+  public getToday(): Date {
     return new Date();
   }
 

@@ -2,11 +2,14 @@ import { inject } from "@adonisjs/fold";
 import { AbstractUserService } from "./interfaces/user.interface.js";
 import { User } from "../database/models/user.model.js";
 import { EntityManager, EntityRepository } from "@mikro-orm/postgresql";
+import { DbID } from "../utils/types.js";
 
 @inject()
 export class UserService implements AbstractUserService {
   private userRepository: EntityRepository<User>;
+
   public constructor(private em: EntityManager) {
+    console.log(this.em);
     this.userRepository = this.em.getRepository(User);
   }
 
@@ -20,7 +23,7 @@ export class UserService implements AbstractUserService {
     return this.userRepository.create(user);
   }
 
-  public async findUserById(id: number): Promise<User | null> {
+  public async findUserById(id: DbID): Promise<User | null> {
     return this.userRepository.findOne({ id });
   }
 

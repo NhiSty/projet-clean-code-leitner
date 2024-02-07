@@ -8,7 +8,6 @@ import mikroOrmConfig from "../mikro-orm.config.js";
  */
 container.singleton(MikroORM, async () => {
   const orm = await MikroORM.init(mikroOrmConfig);
-
   return orm;
 });
 

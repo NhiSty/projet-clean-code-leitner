@@ -2,7 +2,7 @@ import { Migration } from "@mikro-orm/migrations";
 
 export class Migration20231220121911 extends Migration {
   async up(): Promise<void> {
-    // Tags table
+    // Create "tag", "card", "user" and "user_cards" tables
     this.addSql(`
       create table "tag" (
           "id" uuid not null primary key,
@@ -36,6 +36,16 @@ export class Migration20231220121911 extends Migration {
         FOREIGN KEY (card_id) REFERENCES card(id),
         UNIQUE(user_id, card_id)
       );
+    `);
+  }
+
+  async down(): Promise<void> {
+    // Drop tables
+    this.addSql(`
+      drop table if exists "user_card";
+      drop table if exists "user";
+      drop table if exists "card";
+      drop table if exists "tag";
     `);
   }
 }

@@ -7,6 +7,7 @@ import {
 import { HttpRequest, HttpResponse } from "../../utils/types.js";
 import { inject } from "@adonisjs/fold";
 import { errors as vineErrors } from "@vinejs/vine";
+import { AbstractAuthService } from "../../services/interfaces/auth.interface.js";
 
 /**
  * CardController
@@ -15,7 +16,8 @@ import { errors as vineErrors } from "@vinejs/vine";
 export class CardController {
   public constructor(
     private cardService: CardService,
-    private tagService: TagService
+    private tagService: TagService,
+    private authService: AbstractAuthService
   ) {}
 
   /**

@@ -9,6 +9,7 @@ import {
 import { UserCard } from "./userCard.model.js";
 import { Card } from "./card.model.js";
 import type { DbID } from "../../utils/types.js";
+import { Quiz } from "./userQuiz.model.js";
 
 /**
  * User is a MikroORM entity that represents a user in the database.
@@ -42,4 +43,10 @@ export class User {
     pivotEntity: () => UserCard,
   })
   public cards = new Collection<Card>(this);
+
+  /**
+   * A users can have many quiz associated with it.
+   */
+  @OneToMany(() => Quiz, (quiz) => quiz.user)
+  public quizzes = new Collection<Quiz>(this);
 }

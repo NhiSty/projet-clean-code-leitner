@@ -5,6 +5,13 @@ import {
 } from "./interfaces/auth.interface.js";
 import { User } from "../database/models/user.model.js";
 import { AbstractUserService } from "./interfaces/user.interface.js";
+import { HttpRequest, HttpResponse } from "../utils/types.js";
+import { NotFoundError } from "@mikro-orm/core";
+import {
+  BadRequestError,
+  ConflictError,
+  UnauthorizedError,
+} from "../errors.js";
 
 @inject()
 export class AuthService implements AbstractAuthService {
@@ -14,11 +21,11 @@ export class AuthService implements AbstractAuthService {
     const user = await this.userService.findUserByUsername(username);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
 
     if (user.password !== password) {
-      throw new Error("Invalid password");
+      throw new BadRequestError("Invalid password");
     }
 
     return user;
@@ -30,17 +37,23 @@ export class AuthService implements AbstractAuthService {
     );
 
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new ConflictError("User already exists");
     }
 
     return this.userService.createUser(user.username, user.password);
   }
 
-  public async logout(): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
+  public async ensureLoggedIn(
+    request: HttpRequest,
+    response: HttpResponse
+  ): Promise<User> {
+    const user = request.session.get("user");
 
-  getCurrentUser(): Promise<User | null> {
-    throw new Error("Method not implemented.");
+    if (!user) {
+      response.code(401);
+      throw new UnauthorizedError("User not logged in");
+    }
+
+    return user;
   }
 }

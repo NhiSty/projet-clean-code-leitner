@@ -2,6 +2,7 @@ import { EntityManager, EntityRepository, FilterQuery } from "@mikro-orm/core";
 import { Card } from "../database/models/card.model.js";
 import { Tag } from "../database/models/tag.model.js";
 import { inject } from "@adonisjs/fold";
+import { DbID } from "../utils/types.js";
 
 @inject()
 export class CardService {
@@ -44,17 +45,14 @@ export class CardService {
     card.answer = answer;
     card.tag = tag;
 
-    this.em.persist(card);
-    await this.em.flush();
-
-    return card;
+    return this.cardRepository.create(card);
   }
 
   /**
    * Find a card by its id
    * @param id id of the card to find
    */
-  public async findCardById(id: number): Promise<Card | null> {
+  public async findCardById(id: DbID): Promise<Card | null> {
     return await this.cardRepository.findOne({ id });
   }
 
@@ -62,7 +60,7 @@ export class CardService {
    * Delete a card from the database
    * @param id id of the card to delete
    */
-  public async deleteCard(id: number): Promise<void> {
+  public async deleteCard(id: DbID): Promise<void> {
     await this.cardRepository.nativeDelete(id);
   }
 }

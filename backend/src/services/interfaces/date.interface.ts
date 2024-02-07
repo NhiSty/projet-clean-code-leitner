@@ -8,7 +8,7 @@ export abstract class AbstractDateService {
    * Returns the current date.
    * @returns {Date} The current date.
    */
-  abstract getToday(): Promise<Date>;
+  abstract getToday(): Date;
 
   /**
    * Returns the next date based on the given date and card category.

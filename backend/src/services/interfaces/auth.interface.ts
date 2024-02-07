@@ -1,4 +1,5 @@
 import { User } from "../../database/models/user.model.js";
+import { HttpRequest, HttpResponse } from "../../utils/types.js";
 
 export interface CreateUserDto {
   username: string;
@@ -25,13 +26,13 @@ export abstract class AbstractAuthService {
   abstract register(user: CreateUserDto): Promise<User>;
 
   /**
-   * Logs out the current user.
-   */
-  abstract logout(): Promise<void>;
-
-  /**
-   * Returns the current user.
+   * Check if the user is logged in.
+   * @param {HttpRequest} request - The request
+   * @param {HttpResponse} response - The response
    * @returns {User | null} The current user or null if no user is logged in.
    */
-  abstract getCurrentUser(): Promise<User | null>;
+  abstract ensureLoggedIn(
+    request: HttpRequest,
+    response: HttpResponse
+  ): Promise<User>;
 }

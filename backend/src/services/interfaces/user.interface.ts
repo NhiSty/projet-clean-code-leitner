@@ -1,4 +1,5 @@
 import { User } from "../../database/models/user.model.js";
+import { DbID } from "../../utils/types.js";
 
 /**
  * This service handle all user-related operations.
@@ -17,7 +18,7 @@ export abstract class AbstractUserService {
    * @param id - The ID of the user.
    * @returns A promise that resolves with the found user or null if no user is found.
    */
-  abstract findUserById(id: number): Promise<User | null>;
+  abstract findUserById(id: DbID): Promise<User | null>;
 
   /**
    * Finds a user by their username.

@@ -11,3 +11,17 @@ export enum CardCategory {
   SEVENTH = "seventh",
   DONE = "done",
 }
+
+export function getNextCategory(category: CardCategory): CardCategory {
+  const values = Object.values(CardCategory);
+  const index = values.indexOf(category);
+  const clampedIndex = index + (1 % values.length);
+  return values[clampedIndex];
+}
+
+export function getPreviousCategory(category: CardCategory): CardCategory {
+  const values = Object.values(CardCategory);
+  const index = values.indexOf(category);
+  const clampedIndex = index - (1 % values.length);
+  return values[clampedIndex];
+}
