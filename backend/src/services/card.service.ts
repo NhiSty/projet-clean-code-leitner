@@ -8,6 +8,7 @@ import { Tag } from "../database/models/tag.model.js";
 import { inject } from "@adonisjs/fold";
 import { DbID } from "../utils/types.js";
 import { generateUUID } from "../database/datasource.js";
+import { User } from "../database/models/user.model.js";
 
 @inject()
 export class CardService {
@@ -21,7 +22,10 @@ export class CardService {
    * Get all cards from the database
    * @param tags (optional) Filter cards by tags
    */
-  public async getAllCards(tags: string[] = []): Promise<Card[]> {
+  public async getAllCards(
+    tags: string[] = [],
+    forUser: User | null = null
+  ): Promise<Card[]> {
     const opts: FilterQuery<Card> = {};
 
     if (tags.length > 0) {
@@ -29,7 +33,10 @@ export class CardService {
     }
 
     const cards = await this.cardRepository.find(opts, {
-      populate: ["id", "question", "answer", "tag"],
+      populate:
+        forUser !== null
+          ? ["id", "question", "answer", "tag", "userCards"]
+          : ["id", "question", "answer", "tag"],
     });
 
     return cards;

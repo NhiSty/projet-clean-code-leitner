@@ -8,6 +8,8 @@ import { HttpRequest, HttpResponse } from "../../utils/types.js";
 import { inject } from "@adonisjs/fold";
 import { errors as vineErrors } from "@vinejs/vine";
 import { AbstractAuthService } from "../../services/interfaces/auth.interface.js";
+import { UniqueConstraintViolationException } from "@mikro-orm/core";
+import { ConflictError } from "../../errors.js";
 
 /**
  * CardController
@@ -38,17 +40,20 @@ export class CardController {
    * Example: `GET /cards?tags=tag1,tag2`
    */
   public async getAllCards(request: HttpRequest, reply: HttpResponse) {
+    const user = await this.authService.ensureLoggedIn(request, reply);
     const params = await getAllCardsParamsValidator.validate(request.query);
 
     const tags = params.tags ? params.tags.split(",") : [];
 
-    const cards = await this.cardService.getAllCards(tags);
+    const cards = await this.cardService.getAllCards(tags, user);
+
     reply.send(
       cards.map((card) => ({
         id: card.id,
         question: card.question,
         answer: card.answer,
         tag: card.tag.name,
+        category: card.userCards.getItems()?.[0]?.category ?? "first",
       }))
     );
   }
@@ -75,16 +80,24 @@ export class CardController {
       tag = await this.tagService.createTag(card.tag);
     }
 
-    const createdCard = await this.cardService.createCard(
-      card.question,
-      card.answer,
-      tag
-    );
+    try {
+      const createdCard = await this.cardService.createCard(
+        card.question,
+        card.answer,
+        tag
+      );
 
-    reply.send({
-      question: createdCard.question,
-      answer: createdCard.answer,
-      tag: createdCard.tag.name,
-    });
+      reply.send({
+        question: createdCard.question,
+        answer: createdCard.answer,
+        tag: createdCard.tag.name,
+      });
+    } catch (error) {
+      if (error instanceof UniqueConstraintViolationException) {
+        throw new ConflictError("The card already exists");
+      }
+
+      throw error;
+    }
   }
 }

@@ -25,7 +25,7 @@ export class LearningController {
 
     const { date } = await getQuizValidator.validate(request.params);
 
-    const quiz = await this.quizService.retrieveQuiz(date || new Date(), user);
+    const quiz = await this.quizService.retrieveQuiz(date ?? new Date(), user);
 
     response.status(200).send(quiz);
   }

@@ -1,3 +1,4 @@
+import { UniqueConstraintViolationException } from "@mikro-orm/core";
 import logger from "./utils/logger.js";
 import { HttpRequest, HttpResponse } from "./utils/types.js";
 import { errors as vineErrors } from "@vinejs/vine";
@@ -47,7 +48,7 @@ export function fastifyErrorHandler(
 ) {
   if (error instanceof vineErrors.E_VALIDATION_ERROR) {
     logger.debug(error);
-    return reply.status(400).send({
+    return reply.status(422).send({
       message: "Validation error",
       errors: error.messages,
     });
@@ -57,6 +58,13 @@ export function fastifyErrorHandler(
     logger.debug(error);
     return reply.status(error.code).send({
       message: error.message,
+    });
+  }
+  
+  if (error instanceof UniqueConstraintViolationException) {
+    logger.debug(error);
+    return reply.status(409).send({
+      message: "Conflict error",
     });
   }
 

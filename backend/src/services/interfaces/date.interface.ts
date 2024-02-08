@@ -7,4 +7,10 @@ export abstract class AbstractDateService {
    * @returns {Date} The current date.
    */
   abstract getToday(): Date;
+
+  /**
+   * Check if the date is today or not.
+   * @returns {boolean} true if the date is today
+   */
+  abstract isToday(date: Date): boolean;
 }

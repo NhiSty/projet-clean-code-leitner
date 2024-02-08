@@ -1,6 +1,11 @@
 import { inject } from "@adonisjs/fold";
 import { AbstractDateService } from "./interfaces/date.interface.js";
-import { EntityManager, EntityRepository, raw } from "@mikro-orm/postgresql";
+import {
+  EntityManager,
+  EntityRepository,
+  raw,
+  wrap,
+} from "@mikro-orm/postgresql";
 import { Card } from "../database/models/card.model.js";
 import { UserCard } from "../database/models/userCard.model.js";
 import {
@@ -8,9 +13,9 @@ import {
   getNextCategory,
 } from "../database/models/cardCategory.enum.js";
 import { Quiz } from "../database/models/quiz.model.js";
-import { AbstractUserService } from "./interfaces/user.interface.js";
 import { User } from "../database/models/user.model.js";
-import { LeitherSystem as LeitherSystemService } from "./leither.service.js";
+import { LeitnerSystemService } from "./leitner.service.js";
+import { generateUUID } from "../database/datasource.js";
 
 @inject()
 export class QuizService {
@@ -19,7 +24,7 @@ export class QuizService {
   private quizRepository: EntityRepository<Quiz>;
 
   public constructor(
-    private leitherService: LeitherSystemService,
+    private leitnerService: LeitnerSystemService,
     private dateService: AbstractDateService,
     private em: EntityManager
   ) {
@@ -42,17 +47,50 @@ export class QuizService {
       return quiz.cards.getItems();
     }
 
-    // Otherwise, if there isn't any quiz in the database yet, generate a new one with random cards using the Leither system
+    // Otherwise, if there is no quiz and this is a date in the past:
+    if (!this.dateService.isToday(date)) {
+      return [];
+    }
 
+    // Otherwise, if there isn't any quiz in the database yet, generate a new one with random cards using the Leitner system
+    const cards = await this.populateCards(user, date);
+
+    // If there is no cards, return an empty array
+    if (cards.length === 0) {
+      return [];
+    }
+
+    // Otherwise, generate a new quiz
+    const newQuiz = this.em.create(Quiz, {
+      id: generateUUID(),
+      date,
+      user: this.em.getReference(User, user.id),
+      cards: cards.map((c) => this.em.getReference(Card, c.id)),
+    });
+
+    await this.em.persistAndFlush(newQuiz);
+
+    return newQuiz.cards.getItems();
+  }
+
+  /**
+   * Populate an array of maximum 10 cards.
+   *
+   * @param user the user to work with
+   * @param date the date to work with
+   * @returns the array of cards
+   */
+  private async populateCards(user: User, date: Date): Promise<Card[]> {
     /*
      * Get all the cards that can be retrieved
      * To explain a bit, we want:
      * - All the cards that the user has never seen (= no user_card entries)
      * - All the cards that the user has seen and that he can see again
-     *  (= user_cards entries that have a date above the computed date from the leither system)
+     *  (= user_cards entries that have a date above the computed date from the leitner system)
      */
     const query = this.cardRepository
       .createQueryBuilder("c")
+      .addSelect("userCards")
       .leftJoin("c.userCards", "uc")
       .where(
         `
@@ -77,7 +115,7 @@ export class QuizService {
             (category = 'seventh' AND (AGE(NOW(), last_seen) > INTERVAL '? day'))
           )
         )
-      `,
+        `,
         [
           // User ID: first and second binding
           user.id,
@@ -85,32 +123,21 @@ export class QuizService {
           // Categories (from first to seventh): third to ninth binding
           ...Object.values(CardCategory)
             .filter((cat) => cat !== CardCategory.DONE)
-            .map((cat) => this.leitherService.getDays(cat)),
+            .map((cat) => this.leitnerService.getDays(cat)),
         ]
-      );
+      )
+      .orderBy({
+        id: "ASC",
+      })
+      .limit(10);
 
-    const cards = await query.execute();
-
-    // If there is no cards, return an empty array
-    if (cards.length === 0) {
-      return [];
-    }
-
-    // Otherwise, generate a new quiz
-    const newQuiz = new Quiz();
-    newQuiz.date = date;
-    newQuiz.user = user;
-    newQuiz.cards.add(cards);
-
-    await this.quizRepository.insert(newQuiz);
-
-    return newQuiz.cards.getItems();
+    return await query.execute();
   }
 
   /**
    * Update the learning step of a card for a user. If he responded correctly,
    * the learning step will be increased. If he responded incorrectly, the
-   * learning step will be decreased. (based on the Leither logic)
+   * learning step will be decreased. (based on the Leitner logic)
    *
    * @param id id of the card
    * @param valid state of the card
@@ -138,8 +165,8 @@ export class QuizService {
       // Increase the learning step
       userCard.category = getNextCategory(userCard.category);
     } else {
-      // Decrease the learning step
-      userCard.category = getNextCategory(userCard.category);
+      // Reset the learning step
+      userCard.category = CardCategory.FIRST;
     }
 
     // Update the category and last seen date
