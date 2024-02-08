@@ -15,6 +15,8 @@ cp .env.example .env
 npm install
 # Démarre de la base de données
 docker compose up -d
+# Déploiment de la migration
+npm run migrate:up
 # Démarre le serveur
 npm run start
 ```
@@ -26,7 +28,7 @@ cd frontend
 # Installe les dépendances
 npm install
 # Démarre le client
-npm run start
+npm run dev
 ```
 
 À partie de maintenant, l'API du serveur devrait être disponible sur http://localhost:8080 et le client sur http://localhost:5173.

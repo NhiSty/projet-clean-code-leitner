@@ -4,7 +4,7 @@ import { loginValidator } from "../../validation/auth.validation.js";
 import { AbstractAuthService } from "../../services/interfaces/auth.interface.js";
 
 /**
- * AuthController
+ * AuthController provides routes for the user authentication
  */
 @inject()
 export class AuthController {

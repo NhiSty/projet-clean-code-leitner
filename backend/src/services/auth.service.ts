@@ -13,10 +13,16 @@ import {
   NotFoundError,
 } from "../errors.js";
 
+/**
+ * This service handle all authentication-related operations.
+ */
 @inject()
 export class AuthService implements AbstractAuthService {
   public constructor(private userService: AbstractUserService) {}
 
+  /**
+   * @see {@link AbstractAuthService.login}
+   * */
   public async login(username: string, password: string): Promise<User> {
     const user = await this.userService.findUserByUsername(username);
 
@@ -31,6 +37,9 @@ export class AuthService implements AbstractAuthService {
     return user;
   }
 
+  /**
+   * @see {@link AbstractAuthService.register}
+   */
   public async register(user: CreateUserDto): Promise<User> {
     const existingUser = await this.userService.findUserByUsername(
       user.username
@@ -43,6 +52,9 @@ export class AuthService implements AbstractAuthService {
     return this.userService.createUser(user.username, user.password);
   }
 
+  /**
+   * @see {@link AbstractAuthService.ensureLoggedIn}
+   */
   public async ensureLoggedIn(
     request: HttpRequest,
     response: HttpResponse

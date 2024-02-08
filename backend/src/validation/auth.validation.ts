@@ -1,5 +1,8 @@
 import vine from "@vinejs/vine";
 
+/**
+ * Login object validation schema
+ */
 const login = vine.object({
   username: vine.string(),
   password: vine.string(),

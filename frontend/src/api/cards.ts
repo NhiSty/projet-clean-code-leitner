@@ -15,3 +15,12 @@ export async function createCard(card: Omit<Card, "id">): Promise<Card> {
     body: JSON.stringify(card),
   });
 }
+
+export async function answerCard(card: Card, valid: boolean): Promise<Card> {
+  return fetcher(`/api/cards/${card.id}/answer`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      isValid: valid,
+    }),
+  });
+}

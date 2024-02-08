@@ -12,16 +12,14 @@ export enum CardCategory {
   DONE = "done",
 }
 
+/**
+ * Get the next card category from a specific category
+ * @param category current category
+ * @returns the next card category
+ */
 export function getNextCategory(category: CardCategory): CardCategory {
   const values = Object.values(CardCategory);
   const index = values.indexOf(category);
   const clampedIndex = index + (1 % values.length);
-  return values[clampedIndex];
-}
-
-export function getPreviousCategory(category: CardCategory): CardCategory {
-  const values = Object.values(CardCategory);
-  const index = values.indexOf(category);
-  const clampedIndex = index - (1 % values.length);
   return values[clampedIndex];
 }

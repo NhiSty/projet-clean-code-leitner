@@ -4,9 +4,16 @@ import { inject } from "@adonisjs/fold";
 import { DbID } from "../utils/types.js";
 import { generateUUID } from "../database/datasource.js";
 
+/**
+ * This service handle all tag-related operations.
+ */
 @inject()
 export class TagService {
+  /**
+   * The tag repository allowing us to perform database operations on the tags table
+   */
   private tagRepository: EntityRepository<Tag>;
+
   public constructor(private em: EntityManager) {
     this.tagRepository = this.em.getRepository(Tag);
   }

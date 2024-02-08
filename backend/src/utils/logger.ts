@@ -6,7 +6,9 @@ import { pino } from "pino";
  */
 export type ILogger = FastifyBaseLogger;
 
-// Create a logger instance
+/**
+ * Logger instance
+ */
 let logger: ILogger;
 
 // If the environment is production, create a logger that only logs info messages, otherwise create a logger a bit more verbose

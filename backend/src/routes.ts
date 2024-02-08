@@ -52,7 +52,7 @@ export async function setupRoutes(app: FastifyInstance) {
     return ctrl.getQuiz(request, reply);
   });
 
-  app.post("/cards/quizz", async (request, reply) => {
+  app.patch("/cards/:cardId/answer", async (request, reply) => {
     const ctrl = await container.make(LearningController);
     return ctrl.answerQuizCard(request, reply);
   });

@@ -10,8 +10,14 @@ import { DbID } from "../utils/types.js";
 import { generateUUID } from "../database/datasource.js";
 import { User } from "../database/models/user.model.js";
 
+/**
+ * This service handle all card-related operations.
+ */
 @inject()
 export class CardService {
+  /**
+   * The card repository allowing us to perform database operations on the cards table
+   */
   private cardRepository: EntityRepository<Card>;
 
   public constructor(private em: EntityManager) {

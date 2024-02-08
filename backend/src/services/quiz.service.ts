@@ -17,10 +17,22 @@ import { User } from "../database/models/user.model.js";
 import { LeitnerSystemService } from "./leitner.service.js";
 import { generateUUID } from "../database/datasource.js";
 
+/**
+ * This service handle all quiz-related operations.
+ */
 @inject()
 export class QuizService {
+  /**
+   * The user card repository allowing us to perform database operations on the user_cards table
+   */
   private userCardRepository: EntityRepository<UserCard>;
+  /**
+   * The card repository allowing us to perform database operations on the cards table
+   */
   private cardRepository: EntityRepository<Card>;
+  /**
+   * The quiz repository allowing us to perform database operations on the quizzes table
+   */
   private quizRepository: EntityRepository<Quiz>;
 
   public constructor(
@@ -33,6 +45,12 @@ export class QuizService {
     this.quizRepository = this.em.getRepository(Quiz);
   }
 
+  /**
+   * Retrieve a quiz for a user and a date.
+   * @param date - The date to retrieve the quiz for
+   * @param user - The user to retrieve the quiz for
+   * @returns List of cards for the quiz
+   */
   public async retrieveQuiz(date: Date, user: User): Promise<Card[]> {
     // First, try to check if there isn't already a quiz in the database
     const quiz = await this.quizRepository.findOne(
@@ -76,8 +94,8 @@ export class QuizService {
   /**
    * Populate an array of maximum 10 cards.
    *
-   * @param user the user to work with
-   * @param date the date to work with
+   * @param user - the user to work with
+   * @param date - the date to work with
    * @returns the array of cards
    */
   private async populateCards(user: User, date: Date): Promise<Card[]> {
@@ -139,8 +157,8 @@ export class QuizService {
    * the learning step will be increased. If he responded incorrectly, the
    * learning step will be decreased. (based on the Leitner logic)
    *
-   * @param id id of the card
-   * @param valid state of the card
+   * @param id - id of the card
+   * @param valid - state of the card
    */
   public async answerCard(
     card: Card,

@@ -1,0 +1,5 @@
+{
+  "$schema": "./node_modules/@compodoc/compodoc/src/config/schema.json",
+  "theme": "gitbook",
+  "tsconfig": "tsconfig.doc.json"
+}

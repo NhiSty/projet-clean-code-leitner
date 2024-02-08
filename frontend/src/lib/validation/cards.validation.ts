@@ -12,4 +12,8 @@ export const newCardSchema = yup
     answer: yup.string().required(),
     tag: yup.string().required(),
   })
-  .required()
+  .required();
+
+export const answerQuestionSchema = yup.object({
+  answer: yup.string().required(),
+});

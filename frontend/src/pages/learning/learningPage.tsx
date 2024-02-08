@@ -53,7 +53,7 @@ export function LearningPage(): JSX.Element {
         />
       </header>
 
-      <main>{renderQuiz()}</main>
+      <main className="py-8">{renderQuiz()}</main>
     </div>
   );
 }

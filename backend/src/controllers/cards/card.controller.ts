@@ -12,7 +12,7 @@ import { UniqueConstraintViolationException } from "@mikro-orm/core";
 import { ConflictError } from "../../errors.js";
 
 /**
- * CardController
+ * CardController provides routes for the cards manipulations
  */
 @inject()
 export class CardController {

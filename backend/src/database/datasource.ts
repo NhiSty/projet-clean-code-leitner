@@ -23,6 +23,10 @@ container.bind(EntityManager<PostgreSqlDriver>, async () => {
   return orm.em.fork() as EntityManager<PostgreSqlDriver>;
 });
 
+/**
+ * Generate a new UUID for database entities.
+ * @returns a fresh new UUID
+ */
 export function generateUUID(): string {
   return randomUUID();
 }
