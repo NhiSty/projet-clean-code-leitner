@@ -11,7 +11,7 @@ export function HomePage(): JSX.Element {
         <CardHeader>
           <CardTitle className="inline-flex gap-3 items-center">
             <GraduationCap />
-            Welcome to your Leither learning system
+            Welcome to your Leitner learning system
           </CardTitle>
         </CardHeader>
 
