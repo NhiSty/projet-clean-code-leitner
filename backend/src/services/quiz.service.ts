@@ -87,8 +87,9 @@ export class QuizService {
     });
 
     await this.em.persistAndFlush(newQuiz);
+    await this.em.populate(newQuiz, ["cards"]);
 
-    return newQuiz.cards.getItems();
+    return newQuiz.cards.getItems().sort((a, b) => a.id.localeCompare(b.id));
   }
 
   /**

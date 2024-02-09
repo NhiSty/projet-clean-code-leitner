@@ -97,7 +97,7 @@ export function fastifyErrorHandler(
 ) {
   if (error instanceof vineErrors.E_VALIDATION_ERROR) {
     logger.debug(error);
-    return reply.status(422).send({
+    return reply.status(400).send({
       message: "Validation error",
       errors: error.messages,
     });

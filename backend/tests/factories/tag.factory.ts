@@ -7,6 +7,7 @@ export class TagFactory extends Factory<Tag> {
 
   protected definition(): Partial<Tag> {
     return {
+      id: faker.string.uuid(),
       name: faker.word.words(),
     };
   }

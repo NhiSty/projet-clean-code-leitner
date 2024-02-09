@@ -8,6 +8,7 @@ import {
   getQuizValidator,
 } from "../../validation/learning.validation.js";
 import { CardService } from "../../services/card.service.js";
+import { AbstractDateService } from "../../services/interfaces/date.interface.js";
 
 /**
  * LearningController provides routes for the learning process
@@ -17,6 +18,7 @@ export class LearningController {
   public constructor(
     private authService: AbstractAuthService,
     private cardService: CardService,
+    private dateService: AbstractDateService,
     private quizService: QuizService
   ) {}
 
@@ -30,9 +32,20 @@ export class LearningController {
   public async getQuiz(request: HttpRequest, response: HttpResponse) {
     const user = await this.authService.ensureLoggedIn(request, response);
 
-    const { date } = await getQuizValidator.validate(request.params);
+    await getQuizValidator.validate(request.query);
 
-    const quiz = await this.quizService.retrieveQuiz(date ?? new Date(), user);
+    let date: Date | undefined;
+
+    // Small hack because VineJS date parsing seems broken
+    const query = request.query as { date?: string };
+    if (query.date) {
+      date = new Date(query.date);
+    }
+
+    const quiz = await this.quizService.retrieveQuiz(
+      date ?? this.dateService.getToday(),
+      user
+    );
 
     response.status(200).send(quiz);
   }

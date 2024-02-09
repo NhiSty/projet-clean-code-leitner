@@ -2,10 +2,12 @@ import { MikroORM } from "@mikro-orm/postgresql";
 import { defineConfig } from "@mikro-orm/postgresql";
 import { SeedManager } from "@mikro-orm/seeder";
 import mikroOrmOption from "../../src/mikro-orm.config.js";
+import { DatabaseSeeder } from "../seed/test.seeder.js";
 
 const config = defineConfig({
   ...mikroOrmOption,
   dbName: ":memory:",
+  connect: false,
 
   seeder: {
     path: "../seeders",
@@ -25,6 +27,7 @@ const config = defineConfig({
  */
 export async function setupTestDb(): Promise<MikroORM> {
   const orm = await MikroORM.init(config);
+
   await orm.getMigrator().up();
 
   return orm;

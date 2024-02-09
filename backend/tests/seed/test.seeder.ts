@@ -3,15 +3,20 @@ import { Seeder } from "@mikro-orm/seeder";
 import { Card } from "../../src/database/models/card.model.js";
 import { CardFactory } from "../factories/card.factory.js";
 import { TagFactory } from "../factories/tag.factory.js";
+import { User } from "../../src/database/models/user.model.js";
 
 export class DatabaseSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
-    const cards: Card[] = new CardFactory(em)
+    const cards: Card[] = await new CardFactory(em)
       .each((card) => {
         card.tag = new TagFactory(em).makeOne();
       })
-      .make(10);
+      .create(10);
 
-    em.persist(cards);
+    const fakeUser = new User();
+    fakeUser.id = "ffffffff-ffff-ffff-ffff-ffffffffffff";
+    fakeUser.username = "fake user";
+    fakeUser.password = "fake password";
+    em.persist(fakeUser);
   }
 }

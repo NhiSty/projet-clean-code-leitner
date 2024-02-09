@@ -8,6 +8,7 @@ export class CardFactory extends Factory<Card> {
 
   protected definition(): EntityData<Card> {
     return {
+      id: faker.string.uuid(),
       question: faker.lorem.sentence(),
       answer: faker.lorem.sentence(),
     };

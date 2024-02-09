@@ -4,9 +4,9 @@ import vine from "@vinejs/vine";
  * Card creation validation schema
  */
 const createCard = vine.object({
-  question: vine.string(),
-  answer: vine.string(),
-  tag: vine.string(),
+  question: vine.string().minLength(1),
+  answer: vine.string().minLength(1),
+  tag: vine.string().minLength(1),
 });
 
 /**

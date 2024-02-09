@@ -34,8 +34,7 @@
     "date-fns": "^3.3.1",
     "dotenv": "^16.4.0",
     "fastify": "^4.25.2",
-    "pino": "^8.17.2",
-    "supertest": "^6.3.4"
+    "pino": "^8.17.2"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.23",

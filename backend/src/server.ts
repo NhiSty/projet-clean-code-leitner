@@ -40,6 +40,10 @@ export class Server {
       },
     });
 
+    this.app.addHook("onClose", async () => {
+      await this.dataSource.close();
+    });
+
     this.app.setErrorHandler(fastifyErrorHandler);
   }
 
@@ -80,7 +84,6 @@ export class Server {
    * Stops the server and closes the database connection.
    */
   public async stop(): Promise<void> {
-    await this.dataSource.close();
     await this.app.close();
   }
 }
