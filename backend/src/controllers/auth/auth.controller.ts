@@ -24,6 +24,19 @@ export class AuthController {
   }
 
   /**
+   * Register route for the user
+   *
+   * Example: `POST /auth/register`
+   */
+  public async register(request: HttpRequest, reply: HttpResponse) {
+    const { username, password } = await loginValidator.validate(request.body);
+
+    const user = await this.authService.register({ username, password });
+    request.session.set("user", user);
+    reply.send(user);
+  }
+
+  /**
    * Fetch user informations
    *
    * Example: `GET /auth`

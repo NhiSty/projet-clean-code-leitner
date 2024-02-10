@@ -22,7 +22,8 @@ export class Migration20231220121911 extends Migration {
       -- User Table
       create table "user" (
         "id" uuid not null primary key,
-        "username" varchar not null unique
+        "username" varchar not null unique,
+        "password" varchar not null
       );
 
       -- User Card Table

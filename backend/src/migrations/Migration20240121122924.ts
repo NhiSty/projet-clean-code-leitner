@@ -15,14 +15,11 @@ export class Migration20240121122924 extends Migration {
 
       create table "quiz_cards" (
         "card_id" uuid not null,
-        "user_id" uuid not null,
         "quiz_id" uuid not null,
-        "date" date not null,
 
         FOREIGN KEY (card_id) REFERENCES card(id),
-        FOREIGN KEY (user_id) REFERENCES "user"(id),
         FOREIGN KEY (quiz_id) REFERENCES quiz(id),
-        UNIQUE(card_id, quiz_id, user_id, date)
+        UNIQUE(card_id, quiz_id)
       );
     `);
   }

@@ -4,7 +4,7 @@ import "./database/datasource.js";
 import { fastifyErrorHandler } from "./errors.js";
 import { setupRoutes } from "./routes.js";
 import { container } from "./utils/ioc.js";
-import { MikroORM } from "@mikro-orm/postgresql";
+import { EntityManager, MikroORM } from "@mikro-orm/postgresql";
 import { AbstractAuthService } from "./services/interfaces/auth.interface.js";
 import { AuthService } from "./services/auth.service.js";
 import { AbstractUserService } from "./services/interfaces/user.interface.js";
@@ -112,6 +112,10 @@ export async function createServer(port: number): Promise<Server> {
     fakeUser.id = "ffffffff-ffff-ffff-ffff-ffffffffffff";
     fakeUser.username = "fake user";
     fakeUser.password = "fake password";
+
+    const em = await container.make(EntityManager);
+    await em.upsert(fakeUser);
+    await em.flush();
 
     // Otherwise, use the fake ones
     container.bind(AbstractUserService, () =>

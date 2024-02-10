@@ -9,13 +9,17 @@ interface AnswerQuizProps {
   quiz: ICard[];
 }
 
-export function AnswerQuiz(props: AnswerQuizProps): JSX.Element {
-  const [cards] = useState<ICard[]>(structuredClone(props.quiz));
+export function AnswerQuiz({quiz}: AnswerQuizProps): JSX.Element {
+  const [cards, setCards] = useState<ICard[]>([]);
   const [currentCard, setCurrentCard] = useState<ICard | undefined>();
 
   useEffect(() => {
-    setCurrentCard(cards.shift());
-  }, [cards]);
+    setCards([...quiz])
+
+    if (quiz.length > 0) {
+      setCurrentCard(quiz[0]);
+    }
+  }, [quiz]);
 
   const { mutate } = useMutation({
     mutationKey: ["card", currentCard?.id],
@@ -37,7 +41,7 @@ export function AnswerQuiz(props: AnswerQuizProps): JSX.Element {
     setCurrentCard(cards.shift());
   };
 
-  if (props.quiz.length === 0) {
+  if (cards.length === 0) {
     return (
       <Card className="lg:max-w-screen-md mx-auto">
         <CardHeader>
