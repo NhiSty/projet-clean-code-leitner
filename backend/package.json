@@ -13,7 +13,7 @@
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "docs": "npx compodoc -c .compodocrc.json",
-    "docs:serve": "npx compodoc -c .compodocrc.json -sw --port 8888",
+    "docs:serve": "npx compodoc -c .compodocrc.json -sw --port 8889",
     "mikro-orm": "node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js",
     "migrate:up": "npm run mikro-orm migration:up",
     "migrate:down": "npm run mikro-orm migration:down",
