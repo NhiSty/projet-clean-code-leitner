@@ -95,3 +95,15 @@ npm run test
 ### Screenshot
 
 Un dossier `screenshot` est disponible à la racine du projet. Il contient des captures d'écran de l'application.
+
+
+### Auteur
+
+👤 **DEVECI Serkan**
+* Github: [@sDev67](https://github.com/sDev67)
+
+👤 **Jallu Thomas**
+* Github: [@ThomasDev6](https://github.com/ThomasDev6)
+
+👤 **Hamidou Kanoute**
+* Github: [@hkanoute](https://github.com/hkanoute)
